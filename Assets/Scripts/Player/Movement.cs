@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public bool IsMoving { get; set; } = false;
     [SerializeField]
     LayerMask layerMask;
     [SerializeField]
@@ -13,17 +12,20 @@ public class Movement : MonoBehaviour
     float rotationSpeed;
     [SerializeField]
     float moveSpeed;
+
+
     RaycastHit hit;
     Transform trans;
     Vector3 moveToPosition;
     Quaternion rotateTo;
+    bool isMoving = false;
     private void Awake()
     {
         trans = transform;
     }
     private void FixedUpdate()
     {
-        if (IsMoving)
+        if (isMoving)
         {           
             trans.position = Vector3.MoveTowards(trans.position, moveToPosition, moveSpeed * Time.deltaTime);
             if(Vector3.Distance(playerBody.position, moveToPosition) < 0.2f)
@@ -34,12 +36,12 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        if (IsMoving) return;
+        if (isMoving) return;
         if (Input.GetKeyDown(KeyCode.A))
         {
             if (Physics.Raycast(trans.position, Vector3.left, out hit, 2f, layerMask))
             {
-                MoveToPosition(hit.transform.position, Vector3.left);               
+                MoveToPosition(hit.transform.position);               
                 rotateTo = Quaternion.Euler(-90f, 90f, 0);
                 return;
             }
@@ -48,7 +50,7 @@ public class Movement : MonoBehaviour
         {
             if (Physics.Raycast(trans.position, Vector3.forward, out hit, 2f, layerMask))
             {
-                MoveToPosition(hit.transform.position, Vector3.forward);               
+                MoveToPosition(hit.transform.position);               
                 rotateTo = Quaternion.Euler(-90f, 180f, 0);
                 return;
             }
@@ -57,7 +59,7 @@ public class Movement : MonoBehaviour
         {
             if (Physics.Raycast(trans.position, Vector3.right, out hit, 2f, layerMask))
             {
-                MoveToPosition(hit.transform.position, Vector3.right);             
+                MoveToPosition(hit.transform.position);             
                 rotateTo = Quaternion.Euler(-90f, 270f, 0);
                 return;
             }
@@ -66,7 +68,7 @@ public class Movement : MonoBehaviour
         {
             if (Physics.Raycast(trans.position, Vector3.back, out hit, 2f, layerMask))
             {
-                MoveToPosition(hit.transform.position, Vector3.back);              
+                MoveToPosition(hit.transform.position);              
                 rotateTo = Quaternion.Euler(-90f, 0, 0);
                 return;
             }
@@ -74,17 +76,20 @@ public class Movement : MonoBehaviour
     }
     public void StopMoving()
     {
-        IsMoving = false;
+        isMoving = false;
         trans.position = moveToPosition;
     }
-    private void MoveToPosition(Vector3 endPosition, Vector3 direction)
+    private void MoveToPosition(Vector3 endPosition)
     {
-        IsMoving = true;
+        isMoving = true;
         moveToPosition = endPosition;
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Plane"))
+        {
             Destroy(other.gameObject);
+
+        }
     }
 }

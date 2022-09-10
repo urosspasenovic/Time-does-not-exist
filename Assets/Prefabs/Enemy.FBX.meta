@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 904c962494071cd4ead6382998837f11
+guid: eaa6671993cafe140987b5e07bebfac4
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
@@ -11,7 +11,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: M_Enemy
-    second: {fileID: 2100000, guid: f2d21b5990a65e3448f07c6122b8abd2, type: 2}
+    second: {fileID: 2100000, guid: f21276f55e8974341ad96e375a1018db, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

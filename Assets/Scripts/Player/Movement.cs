@@ -12,16 +12,20 @@ public class Movement : MonoBehaviour
     float rotationSpeed;
     [SerializeField]
     float moveSpeed;
-
+    [SerializeField]
+    GameObject explosion;
 
     RaycastHit hit;
     Transform trans;
     Vector3 moveToPosition;
     Quaternion rotateTo;
     bool isMoving = false;
+    GameObject explodePlane;
+    PlaneExplosion planeExplosion;
     private void Awake()
     {
         trans = transform;
+        planeExplosion = GetComponent<PlaneExplosion>();
     }
     private void FixedUpdate()
     {
@@ -88,8 +92,10 @@ public class Movement : MonoBehaviour
     {
         if (other.CompareTag("Plane"))
         {
-            Destroy(other.gameObject);
-
+            other.gameObject.SetActive(false);
+            planeExplosion.CallCreateExplosion(other.transform.position);
         }
     }
+
+
 }

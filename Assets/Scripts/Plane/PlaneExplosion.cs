@@ -6,8 +6,6 @@ public class PlaneExplosion : MonoBehaviour
 {
     [SerializeField]
     GameObject planeExplosion;
-    [SerializeField]
-    Transform explosionsHolder;
 
     Queue<GameObject> planeExplosionsStack;
     Vector3 planePosition;
@@ -17,7 +15,7 @@ public class PlaneExplosion : MonoBehaviour
         planeExplosionsStack = new Queue<GameObject>();
         for (int i = 0; i < 4; i++)
         {
-            GameObject explosion = Instantiate<GameObject>(planeExplosion, Vector3.zero , Quaternion.Euler(-90, 0, 0), explosionsHolder);
+            GameObject explosion = Instantiate<GameObject>(planeExplosion, Vector3.zero , Quaternion.Euler(-90, 0, 0), transform);
             explosion.SetActive(false);
             planeExplosionsStack.Enqueue(explosion);
         }

@@ -13,7 +13,6 @@ public class EnemyMovement : MonoBehaviour
     Vector3 moveToPosition;
     RaycastHit hit;
     List<Vector3> availableDirections = new List<Vector3>();
-    Light light;
     private void Awake()
     {
         ResetDirections();

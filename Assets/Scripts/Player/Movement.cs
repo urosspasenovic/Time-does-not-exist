@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         trans = transform;
-        planeExplosion = GetComponent<PlaneExplosion>();
+        planeExplosion = FindObjectOfType<PlaneExplosion>();
     }
     private void FixedUpdate()
     {

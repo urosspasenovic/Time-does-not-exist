@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class Death : MonoBehaviour
 {
-    ChangePlayer changePlayer;
-    Animator animator;
+    [SerializeField]
+    Transform playerBodyRotation;
+
+    Player player;
+    ActionHistory actionHistory;
+    bool isCurrentPlayer;
     private void Awake()
     {
-        changePlayer = FindObjectOfType<ChangePlayer>();
-        animator = GetComponentInChildren<Animator>();
+        actionHistory = FindObjectOfType<ActionHistory>();
+        player = GetComponent<Player>();
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
-            animator.SetBool("Death", true);
-            changePlayer.RemovePlayer(gameObject);
-            Invoke("DestroyPlayer", 1f);
+            if(player == InputHandler.Instance.CurrentPlayer) isCurrentPlayer = true;
+            else isCurrentPlayer = false;
+            Command command = new DeathCommand(player, player.transform.position, isCurrentPlayer, playerBodyRotation.rotation);
+            actionHistory.SaveAction(command);
+            //InputHandler.Instance.IsMoving = false;
         }
     }
     void DestroyPlayer()

@@ -5,68 +5,89 @@ using UnityEngine;
 
 public class ChangePlayer : MonoBehaviour
 {
+    public int playersCount;
     [SerializeField]
     Camera mainCamera;
     [SerializeField]
     Vector3 cameraLocalPostion;
 
     GameObject[] playersArray;
-    List<GameObject> players;
-    GameObject currentPlayer;
-    Movement currentPlayerMovement;
+    List<Player> players;
+    Player currentPlayer;
+
     private void Awake()
     {
-        players = new List<GameObject>();
+        players = new List<Player>();
         playersArray = GameObject.FindGameObjectsWithTag("Player");
         for(int i = 0; i < playersArray.Length; i++)
         {
-            players.Add(playersArray[i]);
-            playersArray[i].GetComponent<Movement>().enabled = false;                     
+            players.Add(playersArray[i].GetComponent<Player>());                   
         }
-        currentPlayer = players[0];
-        mainCamera.transform.parent = currentPlayer.transform;
-        currentPlayerMovement = currentPlayer.GetComponent<Movement>();
-        currentPlayerMovement.enabled = true;
+        InputHandler.Instance.CurrentPlayer = players[0];
+        InputHandler.Instance.CurrentPosition = players[0].transform.position;
+        mainCamera.transform.parent = InputHandler.Instance.CurrentPlayer.transform;
         mainCamera.transform.localPosition = cameraLocalPostion;
         playersArray = null;
+        playersCount = players.Count;
     }
 
-    public void RemovePlayer(GameObject playerToRemove)
+    public void ChangePlayers()
+    {
+        ChangeCurrentPlayer();
+        InputHandler.Instance.IsMoving = false;
+    }
+
+    public void UndoChangePlayer()
+    {
+        //add last used player to first place
+        List<Player> copyList = new List<Player> { players[^1] };
+        //add rest in order
+        copyList.AddRange(players);
+        //remove last used bcs he is first now
+        copyList.RemoveAt(copyList.Count - 1);
+        players = copyList;
+        ChangeToSecondPlayer();
+        InputHandler.Instance.IsMoving = false;
+    }
+
+
+
+    public void RemovePlayer(Player playerToRemove)
     {
         if (players[0] == playerToRemove)
         {
             if(players.Count == 1)
             {
                 print("Game over");
+                //ui game over
                 return;
             }
-                
+
             ChangeCurrentPlayer();
             
         }
-        else players.Remove(playerToRemove);
+        players.RemoveAt(players.Count - 1);
+        playersCount--;
     }
 
-    private void Update()
+    public void ChangeCurrentPlayer()
     {
-        if (Input.GetKeyUp(KeyCode.E) && players.Count > 1)
-        {
-            players.Add(currentPlayer);
-            ChangeCurrentPlayer();
-            
-        }
-    }
-
-    private void ChangeCurrentPlayer()
-    {
+        //move current player to last in the line
+        players.Add(InputHandler.Instance.CurrentPlayer);
         players.RemoveAt(0);
-        currentPlayerMovement.enabled = false;
-        currentPlayer = players[0];
-        //maybe have queue for Movement script too
-        currentPlayerMovement = currentPlayer.GetComponent<Movement>();
-        currentPlayerMovement.enabled = true;
-        mainCamera.transform.parent = currentPlayer.transform;
-        mainCamera.transform.localPosition = cameraLocalPostion;
+        ChangeToSecondPlayer();
 
+    }
+    private void ChangeToSecondPlayer()
+    {
+        InputHandler.Instance.CurrentPlayer = players[0];
+        InputHandler.Instance.CurrentPosition = players[0].transform.position;
+        mainCamera.transform.parent = InputHandler.Instance.CurrentPlayer.transform;
+        mainCamera.transform.localPosition = cameraLocalPostion;
+    }
+    public void AddPlayer(Player player)
+    {
+        players.Add(player);
+        playersCount++;
     }
 }

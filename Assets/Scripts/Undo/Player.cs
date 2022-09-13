@@ -120,9 +120,8 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Plane") && movingForward)
         {
-            if (Vector3.Distance(other.transform.position, currentPosition) > 0.2f) return;
+            if (Vector3.Distance(other.transform.position, currentPosition) > 0.4f) return;
             planes.Add(other.gameObject);
-            print(planes.Count);
             other.gameObject.SetActive(false);
             planeExplosion.CallCreateExplosion(other.transform.position);
             

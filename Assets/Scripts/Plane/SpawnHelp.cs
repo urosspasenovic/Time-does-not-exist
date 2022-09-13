@@ -8,10 +8,21 @@ public class SpawnHelp : MonoBehaviour
     GameObject objectToSpawn;
     [SerializeField]
     Material planeMaterial;
+
+    ChangePlayer changePlayer;
+    private void Awake()
+    {
+        changePlayer = FindObjectOfType<ChangePlayer>();
+    }
     private void OnTriggerEnter(Collider other)
     {
-        objectToSpawn.SetActive(true);
-        GetComponent<MeshRenderer>().material = planeMaterial;
-        this.enabled = false;
+        if (other.CompareTag("Player"))
+        {
+            objectToSpawn.SetActive(true);
+            GetComponent<MeshRenderer>().material = planeMaterial;
+            if(objectToSpawn.CompareTag("Player"))
+                changePlayer.AddPlayer(objectToSpawn.GetComponent<Player>());
+            this.enabled = false;
+        }
     }
 }

@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         planeExplosion = FindObjectOfType<PlaneExplosion>();
         planes = new List<GameObject>();    
+        currentPosition = transform.position;
     }
 
     internal void UndoMove(Vector3 undoPosition, Quaternion rotation)
@@ -119,7 +120,7 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Plane") && movingForward)
         {
-            if (other.transform.position != currentPosition) return;
+            if (Vector3.Distance(other.transform.position, currentPosition) > 0.2f) return;
             planes.Add(other.gameObject);
             print(planes.Count);
             other.gameObject.SetActive(false);

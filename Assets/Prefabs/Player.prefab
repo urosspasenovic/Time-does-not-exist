@@ -382,7 +382,6 @@ MonoBehaviour:
   movingBackwardsSpeed: 0
   rotationSpeed: 400
   playerBody: {fileID: 5255215838900303823}
-  playerDeathPrefab: {fileID: 102761441538526862, guid: 80c486065893a1f4e8083bfcc5197520, type: 3}
 --- !u!1 &5720978400028550493
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,7 +595,7 @@ Light:
   m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1280
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0

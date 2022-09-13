@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
+    public bool Moved { get; set; }
     [SerializeField]
     float moveSpeed;
     [SerializeField]
     LayerMask layerMask;
+
+
     bool isMoving = false;
     Transform trans;
     Vector3 moveToPosition;

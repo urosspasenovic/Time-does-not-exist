@@ -24,7 +24,8 @@ public class StopEnemies : MonoBehaviour
     {
         for (int i = 0; i < enemies.Length; i++)
         {
-            enemies[i].enabled = true;
+            if(enemies[i].Moved)
+                enemies[i].enabled = true;
         }
     }
 }

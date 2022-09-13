@@ -127,5 +127,15 @@ public class Player : MonoBehaviour
             
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("InactiveEnemy"))
+        {
+            EnemyMovement enemyMovement = other.GetComponentInParent<EnemyMovement>();
+            enemyMovement.enabled = true;
+            enemyMovement.Moved = true;
+            other.gameObject.SetActive(false);
+        }
+    }
 
 }

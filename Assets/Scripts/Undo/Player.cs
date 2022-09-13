@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     Vector3 moveToPosition;
     Transform trans;
     ChangePlayer changePlayer;
-    
+    Vector3 currentPosition;
     private void Awake()
     {
         trans = GetComponent<Transform>();
@@ -45,37 +45,46 @@ public class Player : MonoBehaviour
 
     public void RessuractePlayer(Vector3 position, bool isCurrentPlayer, Quaternion playerBodyRotation)
     {
-        //add animation
+        InputHandler.Instance.IsMoving = true;
         changePlayer.AddPlayer(this);
+        gameObject.transform.position = moveToPosition;
+        playerBody.position = moveToPosition;
+        gameObject.SetActive(true);
+        playerBody.rotation = playerBodyRotation;
+        Death.canDie = false;
+
         if (isCurrentPlayer)
         {
-            //change camera to that player
             changePlayer.UndoChangePlayer();
-        }
-        gameObject.SetActive(true);
-        playerBody.position = position;
-        playerBody.rotation = playerBodyRotation;
-        InputHandler.Instance.IsMoving = false;
-    }
 
+        }
+        InputHandler.Instance.IsMoving = false;
+        Invoke("ReactivateColliderAfterRessuraction", 1.5f);
+    }
+    void ReactivateColliderAfterRessuraction()
+    {
+        Death.canDie = true;
+    }
     private void DeactivatePlayer()
     {
         gameObject.SetActive(false);
+        changePlayer.RemovePlayer(this);
         InputHandler.Instance.IsMoving = false;
     }
     public void DestroyPlayer()
     {
+        isMoving = false;
         animator.SetBool("Death", true);
-        changePlayer.RemovePlayer(this);
-        Invoke("DeactivatePlayer", 1f);
+        Invoke("DeactivatePlayer", 0.5f);
     }
 
-    public void Move(Vector3 moveToPosition, Quaternion rotateTo)
+    public void Move(Vector3 moveToPosition, Quaternion rotateTo, Vector3 undoPosition)
     {
         movingForward = true;
         isMoving = true;
         this.moveToPosition = moveToPosition;
         this.rotateTo = rotateTo;
+        currentPosition = undoPosition;
     }
 
     private void FixedUpdate()
@@ -104,14 +113,18 @@ public class Player : MonoBehaviour
         trans.position = moveToPosition;
         InputHandler.Instance.CurrentPosition = moveToPosition;
         InputHandler.Instance.IsMoving = false;
+        currentPosition = moveToPosition;
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Plane") && movingForward)
         {
+            if (other.transform.position != currentPosition) return;
             planes.Add(other.gameObject);
-            planeExplosion.CallCreateExplosion(other.transform.position);
+            print(planes.Count);
             other.gameObject.SetActive(false);
+            planeExplosion.CallCreateExplosion(other.transform.position);
+            
         }
     }
 

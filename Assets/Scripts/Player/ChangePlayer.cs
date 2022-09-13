@@ -15,7 +15,7 @@ public class ChangePlayer : MonoBehaviour
     List<Player> players;
     Player currentPlayer;
 
-    private void Awake()
+    private void Start()
     {
         players = new List<Player>();
         playersArray = GameObject.FindGameObjectsWithTag("Player");
@@ -90,4 +90,5 @@ public class ChangePlayer : MonoBehaviour
         players.Add(player);
         playersCount++;
     }
+   
 }

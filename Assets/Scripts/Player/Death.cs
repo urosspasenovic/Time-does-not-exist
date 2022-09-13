@@ -6,6 +6,7 @@ public class Death : MonoBehaviour
 {
     [SerializeField]
     Transform playerBodyRotation;
+    public static bool canDie = true;
 
     Player player;
     ActionHistory actionHistory;
@@ -17,18 +18,15 @@ public class Death : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && canDie)
         {
             if(player == InputHandler.Instance.CurrentPlayer) isCurrentPlayer = true;
             else isCurrentPlayer = false;
+            InputHandler.Instance.IsMoving = true;
             Command command = new DeathCommand(player, player.transform.position, isCurrentPlayer, playerBodyRotation.rotation);
             actionHistory.SaveAction(command);
             //InputHandler.Instance.IsMoving = false;
         }
     }
-    void DestroyPlayer()
-    {
-        gameObject.SetActive(false);
-        //animator.SetBool("Reset", true);
-    }
+
 }

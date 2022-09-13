@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,11 +18,18 @@ public class MovePlayerCommand : Command
 
     public override void Execute()
     {
-        selectedPlayer.Move(executePosition, rotation);
+        selectedPlayer.Move(executePosition, rotation, undoPosition);
     }
 
     public override void Undo()
     {
-        selectedPlayer.UndoMove(undoPosition, rotation);
+            try
+            {
+                selectedPlayer.UndoMove(undoPosition, rotation);
+            }
+            catch (ArgumentOutOfRangeException e)
+        {
+            Debug.Log("greska u movementu");
+        }
     }
 }

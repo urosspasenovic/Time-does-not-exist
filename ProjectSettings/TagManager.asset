@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Lighthouse
   - InactiveEnemy
+  - Pickup
   layers:
   - Default
   - TransparentFX

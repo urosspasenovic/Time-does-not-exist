@@ -6,6 +6,10 @@ public class InputHandler : MonoBehaviour
 {
     [SerializeField]
     LayerMask layerMask;
+    [SerializeField]
+    int numberOfMovesAfterEnemiesCanMove;
+    [SerializeField]
+    float timeAfterYouCanStopEnemyMovement;
 
     [HideInInspector]
     public static InputHandler Instance;
@@ -19,6 +23,11 @@ public class InputHandler : MonoBehaviour
     ActionHistory actionHistory;
     ChangePlayer changePlayer;
     RaycastHit hit;
+    int movesMade = 0;
+    float timerForStoppingEnemyMovement = 0;
+    bool startTimer = true;
+    bool canUsePowerUp = false;
+    float undoTiemr = 0.7f;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -28,6 +37,22 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
+        undoTiemr -= Time.deltaTime;
+        if (startTimer)
+        {
+            timerForStoppingEnemyMovement += Time.deltaTime;
+            if(timerForStoppingEnemyMovement > timeAfterYouCanStopEnemyMovement)
+            {
+                //show on UI you can use power up
+                canUsePowerUp = true;
+                timerForStoppingEnemyMovement = 0;
+            }
+        }
+        if (movesMade >= numberOfMovesAfterEnemiesCanMove)
+        {
+            StopEnemies.EnableEnemyMovement();
+            startTimer = true;
+        }
         if (IsMoving) return;       
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -40,7 +65,7 @@ public class InputHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             if (Physics.Raycast(CurrentPosition, Vector3.forward, out hit, 2f, layerMask))
-            {
+            {              
                 MoveToPosition(hit.transform.position, Quaternion.Euler(-90f, 180f, 0));
                 return;
             }
@@ -62,11 +87,13 @@ public class InputHandler : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && undoTiemr <= 0)
         {
             //maybe its not moving, maybe its ressuracting, but need to stop input
             IsMoving = true;
             actionHistory.UndoAction();
+            undoTiemr = 0.9f;
+            return;
         }
 
         if (Input.GetKeyDown(KeyCode.E) && changePlayer.playersCount > 1)
@@ -74,11 +101,22 @@ public class InputHandler : MonoBehaviour
             IsMoving = true;
             Command command = new ChangePlayerCommand(changePlayer);
             actionHistory.SaveAction(command);
+            return;
         }
+        if (Input.GetKeyDown(KeyCode.F) && canUsePowerUp)
+        {
+            StopEnemies.StopEnemiesMovement();
+            canUsePowerUp = false;
+            movesMade = 0;
+            startTimer = false;
+            return;
+        }
+        
     }
     private void MoveToPosition(Vector3 endPosition, Quaternion rotation)
     {
         IsMoving = true;
+        movesMade++;
         //call command
         Command command = new MovePlayerCommand(CurrentPlayer, CurrentPosition, endPosition, rotation);
         actionHistory.SaveAction(command);

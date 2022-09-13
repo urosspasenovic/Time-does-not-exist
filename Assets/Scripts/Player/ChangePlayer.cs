@@ -55,16 +55,8 @@ public class ChangePlayer : MonoBehaviour
     public void RemovePlayer(Player playerToRemove)
     {
         if (players[0] == playerToRemove)
-        {
-            if(players.Count == 1)
-            {
-                print("Game over");
-                //ui game over
-                return;
-            }
-
-            ChangeCurrentPlayer();
-            
+        {           
+            ChangeCurrentPlayer();           
         }
         players.RemoveAt(players.Count - 1);
         playersCount--;
@@ -80,6 +72,7 @@ public class ChangePlayer : MonoBehaviour
     }
     private void ChangeToSecondPlayer()
     {
+        
         InputHandler.Instance.CurrentPlayer = players[0];
         InputHandler.Instance.CurrentPosition = players[0].transform.position;
         mainCamera.transform.parent = InputHandler.Instance.CurrentPlayer.transform;

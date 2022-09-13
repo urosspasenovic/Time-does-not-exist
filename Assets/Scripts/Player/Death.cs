@@ -11,15 +11,18 @@ public class Death : MonoBehaviour
     Player player;
     ActionHistory actionHistory;
     bool isCurrentPlayer;
+    AudioSource audioSource;
     private void Awake()
     {
         actionHistory = FindObjectOfType<ActionHistory>();
         player = GetComponent<Player>();
+        audioSource = GetComponent<AudioSource>();
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy") && canDie)
         {
+            audioSource.Play();
             if(player == InputHandler.Instance.CurrentPlayer) isCurrentPlayer = true;
             else isCurrentPlayer = false;
             InputHandler.Instance.IsMoving = true;

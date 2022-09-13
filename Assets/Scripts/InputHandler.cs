@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ public class InputHandler : MonoBehaviour
     [HideInInspector]
     public Vector3 CurrentPosition { get; set; }
 
+    bool gameRunning = false;
+    UIHandler uIHandler;
+    int pickup = 0;
     ActionHistory actionHistory;
     ChangePlayer changePlayer;
     RaycastHit hit;
@@ -33,10 +37,12 @@ public class InputHandler : MonoBehaviour
         if (Instance == null) Instance = this;
         changePlayer = FindObjectOfType<ChangePlayer>();
         actionHistory = FindObjectOfType<ActionHistory>();
+        uIHandler = FindObjectOfType<UIHandler>();
     }
 
     void Update()
     {
+        if (!gameRunning) return;
         undoTiemr -= Time.deltaTime;
         if (startTimer)
         {
@@ -111,8 +117,26 @@ public class InputHandler : MonoBehaviour
             startTimer = false;
             return;
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (gameRunning)
+            {
+                gameRunning = false;
+                StopEnemies.StopEnemiesMovement();             
+                uIHandler.Pause();
+            }
+            else
+            {
+                StopEnemies.EnableEnemyMovement();
+                uIHandler.StartGame();
+            }
+        }
+
         
     }
+
+    
+
     private void MoveToPosition(Vector3 endPosition, Quaternion rotation)
     {
         IsMoving = true;
@@ -121,5 +145,24 @@ public class InputHandler : MonoBehaviour
         Command command = new MovePlayerCommand(CurrentPlayer, CurrentPosition, endPosition, rotation);
         actionHistory.SaveAction(command);
 
+    }
+
+    public void AddPickup()
+    {
+        pickup++;
+        uIHandler.ChangeTimeCollected();
+        if(pickup == 12)
+        {
+            uIHandler.GameWon();
+            print("You won");
+        }
+    }
+    public void StartGame()
+    {
+        gameRunning = true;
+    }
+    public void GameOver()
+    {
+       uIHandler.GameLost();
     }
 }

@@ -10,9 +10,11 @@ public class SpawnHelp : MonoBehaviour
     Material planeMaterial;
 
     ChangePlayer changePlayer;
+    AudioSource audioSource;
     private void Awake()
     {
         changePlayer = FindObjectOfType<ChangePlayer>();
+        audioSource = GetComponent<AudioSource>();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -23,6 +25,7 @@ public class SpawnHelp : MonoBehaviour
             if(objectToSpawn.CompareTag("Player"))
                 changePlayer.AddPlayer(objectToSpawn.GetComponent<Player>());
             this.enabled = false;
+            audioSource.Play();
         }
     }
 }

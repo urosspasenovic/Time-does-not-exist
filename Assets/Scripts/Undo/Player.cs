@@ -68,6 +68,12 @@ public class Player : MonoBehaviour
     }
     private void DeactivatePlayer()
     {
+        if(changePlayer.playersCount == 1)
+        {
+            print("Game over");
+            InputHandler.Instance.GameOver();
+            return;
+        }
         gameObject.SetActive(false);
         changePlayer.RemovePlayer(this);
         InputHandler.Instance.IsMoving = false;
@@ -136,6 +142,7 @@ public class Player : MonoBehaviour
             enemyMovement.Moved = true;
             other.gameObject.SetActive(false);
         }
+
     }
 
 }

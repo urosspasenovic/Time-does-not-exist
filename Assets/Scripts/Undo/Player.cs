@@ -48,18 +48,17 @@ public class Player : MonoBehaviour
     {
         InputHandler.Instance.IsMoving = true;
         changePlayer.AddPlayer(this);
-        playerBody.position = position;
-
-       
+        gameObject.transform.position = moveToPosition;
+        playerBody.position = moveToPosition;
         gameObject.SetActive(true);
         playerBody.rotation = playerBodyRotation;
         Death.canDie = false;
+
         if (isCurrentPlayer)
         {
-            playerBody.position = moveToPosition;
             changePlayer.UndoChangePlayer();
+
         }
-        gameObject.transform.position = playerBody.position;
         InputHandler.Instance.IsMoving = false;
         Invoke("ReactivateColliderAfterRessuraction", 1.5f);
     }
